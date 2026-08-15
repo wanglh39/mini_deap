@@ -1,0 +1,1906 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="DEAP 进化算法库教学重写 —— 保留设计思想，简化非教学细节">
+      
+      
+      
+        <link rel="canonical" href="https://wanglh39.github.io/mini_deap/03_creator/">
+      
+      
+        <link rel="prev" href="../02_toolbox/">
+      
+      
+        <link rel="next" href="../04_operators/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>阶段 3 · Creator - mini_deap</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Noto Sans SC";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#3creator" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="mini_deap" class="md-header__button md-logo" aria-label="mini_deap" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            mini_deap
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              阶段 3 · Creator
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange"  aria-label="切换深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="orange"  aria-label="切换浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="分享" aria-label="分享" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/wanglh39/mini_deap" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    wanglh39/mini_deap
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../00_overview/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  总览
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../01_fitness/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  基础
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../04_operators/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  算子与统计
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../06_algorithms/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  算法骨架
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../08_nsga2/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  进阶
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="mini_deap" class="md-nav__button md-logo" aria-label="mini_deap" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    mini_deap
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/wanglh39/mini_deap" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    wanglh39/mini_deap
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    总览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基础
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    基础
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_fitness/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 1 · Fitness
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_toolbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 2 · Toolbox
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 3 · Creator
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 3 · Creator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#class-individuallist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一、背景：为什么不直接 class Individual(list): ...，非要动态建类？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        二、核心设计思想
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="二、核心设计思想">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-isinstanceobj-type-vs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ① isinstance(obj, type) 区分实例属性 vs 类属性（最关键的技巧）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-metacreator-__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ② 元类 MetaCreator 改写 __init__ 注入分发逻辑
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-class_replacers-arrayarraynumpyndarray-deepcopy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ③ class_replacers 修正 array.array/numpy.ndarray 的 deepcopy 坑
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-__reduce__-copyregpickle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ④ __reduce__ + copyreg.pickle 让动态类可序列化
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mini_deapbasecreatorpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        三、逐段精读 mini_deap/base/creator.py
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="三、逐段精读 mini_deap/base/creator.py">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-class_replacers-_array-_numpy_array" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 class_replacers 与 _array / _numpy_array
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-metacreator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 MetaCreator 元类
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-meta_create-globals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 meta_create + globals() 注册
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-create" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 create 入口
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        四、和 deap 原版对照
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        五、常见陷阱
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        六、Python 语言特性备忘
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        七、关键收获
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        八、思考题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        九、实战示例与性能
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="九、实战示例与性能">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-create" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 create 的各种用法
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-vs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 性能：元类创建开销 vs 手写类
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 调试技巧
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        十、下一阶段预告
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    算子与统计
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    算子与统计
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_operators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 4 · 算子库
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 5 · support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    算法骨架
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    算法骨架
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_algorithms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 6 · algorithms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07_examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 7 · examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    进阶
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    进阶
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08_nsga2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 8 · NSGA2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09_gp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 9 · GP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10_cma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 10 · CMA-ES
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#class-individuallist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一、背景：为什么不直接 class Individual(list): ...，非要动态建类？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        二、核心设计思想
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="二、核心设计思想">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-isinstanceobj-type-vs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ① isinstance(obj, type) 区分实例属性 vs 类属性（最关键的技巧）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-metacreator-__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ② 元类 MetaCreator 改写 __init__ 注入分发逻辑
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-class_replacers-arrayarraynumpyndarray-deepcopy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ③ class_replacers 修正 array.array/numpy.ndarray 的 deepcopy 坑
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-__reduce__-copyregpickle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ④ __reduce__ + copyreg.pickle 让动态类可序列化
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mini_deapbasecreatorpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        三、逐段精读 mini_deap/base/creator.py
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="三、逐段精读 mini_deap/base/creator.py">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-class_replacers-_array-_numpy_array" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 class_replacers 与 _array / _numpy_array
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-metacreator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 MetaCreator 元类
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-meta_create-globals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 meta_create + globals() 注册
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-create" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 create 入口
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        四、和 deap 原版对照
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        五、常见陷阱
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        六、Python 语言特性备忘
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        七、关键收获
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        八、思考题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        九、实战示例与性能
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="九、实战示例与性能">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-create" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 create 的各种用法
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-vs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 性能：元类创建开销 vs 手写类
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 调试技巧
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        十、下一阶段预告
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="3creator">阶段 3：Creator —— 动态建类（元编程工厂）<a class="headerlink" href="#3creator" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>对应 DEAP：<code>deap/creator.py</code>（原版 193 行，本阶段同量级，核心全保留）
+产出：<code>mini_deap/base/creator.py</code> + <code>tests/base/test_creator.py</code>（15 测试全过）</p>
+</blockquote>
+<hr />
+<h2 id="class-individuallist">一、背景：为什么不直接 <code>class Individual(list): ...</code>，非要动态建类？<a class="headerlink" href="#class-individuallist" title="Permanent link">&para;</a></h2>
+<p>进化算法的个体可以是任意容器：<code>list</code>（实数/二进制 GA）、<code>set</code>（集合 GA）、<code>array.array</code>（紧凑数值）、<code>numpy.ndarray</code>（向量化）、<code>PrimitiveTree</code>（遗传编程的语法树）。每种都要挂一个 <code>fitness</code> 属性，且 fitness 类型也可能变（<code>FitnessMax</code>/<code>FitnessMin</code>/<code>FitnessMulti</code>）。</p>
+<p><strong>静态写法的组合爆炸</strong>：容器类型 × fitness 类型 = N × M 个子类要手写：</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">IndividualListMax</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">):</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">fitness</span> <span class="o">=</span> <span class="n">FitnessMax</span><span class="p">()</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="k">class</span><span class="w"> </span><span class="nc">IndividualListMin</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">):</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">fitness</span> <span class="o">=</span> <span class="n">FitnessMin</span><span class="p">()</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="k">class</span><span class="w"> </span><span class="nc">IndividualSetMax</span><span class="p">(</span><span class="nb">set</span><span class="p">):</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">):</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">fitness</span> <span class="o">=</span> <span class="n">FitnessMax</span><span class="p">()</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="k">class</span><span class="w"> </span><span class="nc">IndividualArrayMax</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">):</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">seq</span><span class="o">=</span><span class="p">()):</span>                          <span class="c1"># array 要 __new__</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="n">seq</span><span class="p">)</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="p">):</span>                      <span class="c1"># array 的 deepcopy 坑</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>        <span class="o">...</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="c1"># ... 还有 numpy、GP 树、Multi 各种组合</span>
+</span></code></pre></div>
+<p>每换一个组合就手写一个子类，重复且易错（尤其 <code>array.array</code>/<code>numpy.ndarray</code> 的 <code>__new__</code>/<code>__deepcopy__</code> 坑每个都得重处理）。</p>
+<p><strong>DEAP 的解法</strong>：用一个工厂函数 <code>create</code>，一行声明就造好类：</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">creator</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;FitnessMax&quot;</span><span class="p">,</span> <span class="n">Fitness</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,))</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">creator</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;Individual&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="n">fitness</span><span class="o">=</span><span class="n">FitnessMax</span><span class="p">)</span>      <span class="c1"># list + fitness</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">creator</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;Individual&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">,</span> <span class="n">fitness</span><span class="o">=</span><span class="n">FitnessMax</span><span class="p">)</span>       <span class="c1"># 换成 set，一行</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">creator</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;Individual&quot;</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">typecode</span><span class="o">=</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="n">fitness</span><span class="o">=</span><span class="n">FitnessMax</span><span class="p">)</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">creator</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;Individual&quot;</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">fitness</span><span class="o">=</span><span class="n">FitnessMax</span><span class="p">)</span>
+</span></code></pre></div>
+<p>这是<strong>元编程</strong>：用代码生成代码（类）。<code>create</code> 是"类的工厂"，配置（基类 + 属性）当参数传进去，产出定制类。本质是把"写一个类"这件事数据化、参数化，消除组合爆炸。</p>
+<hr />
+<h2 id="_1">二、核心设计思想<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<h3 id="1-isinstanceobj-type-vs">① <code>isinstance(obj, type)</code> 区分实例属性 vs 类属性（最关键的技巧）<a class="headerlink" href="#1-isinstanceobj-type-vs" title="Permanent link">&para;</a></h3>
+<p><code>create(name, base, **kargs)</code> 的 <code>kargs</code> 里，值有两种：</p>
+<table>
+<thead>
+<tr>
+<th>值的类型</th>
+<th>例子</th>
+<th>处理</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>是类型（<code>type</code> 的实例）</td>
+<td><code>fitness=FitnessMax</code></td>
+<td>实例化时调 <code>FitnessMax()</code> 存到 <code>self.fitness</code></td>
+<td><strong>实例属性</strong>，每实例独立</td>
+</tr>
+<tr>
+<td>不是类型</td>
+<td><code>weights=(1.0,)</code>、<code>size=42</code></td>
+<td>直接挂类上</td>
+<td><strong>类属性</strong>，所有实例共享</td>
+</tr>
+</tbody>
+</table>
+<p>为什么这么分？因为<strong>类型需要"每实例一份新对象"，普通值可以共享</strong>：
+- <code>fitness=FitnessMax</code>：每个个体要有自己的 fitness 实例（值各不同），所以实例化时调 <code>FitnessMax()</code> 造新的。
+- <code>weights=(1.0,)</code>：所有同类 fitness 共享同一组 weights（不可变，共享安全），挂类属性即可。
+- <code>size=42</code>：常量配置，共享。</p>
+<p>判断依据就是 <code>isinstance(obj, type)</code>：<code>type</code> 是所有类的元类，<code>isinstance(FitnessMax, type)</code> 为 True（FitnessMax 是类），<code>isinstance((1.0,), type)</code> 为 False（元组不是类）。</p>
+<h3 id="2-metacreator-__init__">② 元类 <code>MetaCreator</code> 改写 <code>__init__</code> 注入分发逻辑<a class="headerlink" href="#2-metacreator-__init__" title="Permanent link">&para;</a></h3>
+<p><strong>两种动态建类方式对比</strong>：</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># 方式A：type() 三参数（不用元类）</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">Individual</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="s2">&quot;Individual&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,),</span> <span class="p">{</span><span class="s2">&quot;fitness&quot;</span><span class="p">:</span> <span class="n">FitnessMax</span><span class="p">})</span>  <span class="c1"># fitness 变类属性，错！</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># 方式B：元类（DEAP 用的）</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">MetaCreator</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">dct</span><span class="p">):</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>        <span class="c1"># 拦截，改写 __init__，把类型值挪到实例化时调</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>        <span class="o">...</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">Individual</span> <span class="o">=</span> <span class="n">MetaCreator</span><span class="p">(</span><span class="s2">&quot;Individual&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;fitness&quot;</span><span class="p">:</span> <span class="n">FitnessMax</span><span class="p">})</span>
+</span></code></pre></div>
+<p>方式 A 的问题：<code>type()</code> 三参数把 <code>dct</code> 全挂成类属性，<code>fitness=FitnessMax</code> 会变成类属性（所有实例共享同一个 FitnessMax <strong>类</strong>，不是实例）。且没法在实例化时调 <code>FitnessMax()</code> 造实例。元类能拦截 <code>__init__</code> 注入定制逻辑，方式 A 不能。这是 DEAP 必须用元类而非 <code>type()</code> 的根因。</p>
+<p>元类改写后的 <code>init_type</code>：</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">init_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="k">for</span> <span class="n">obj_name</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">dict_inst</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>      <span class="c1"># dict_inst = {fitness: FitnessMax}</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj_name</span><span class="p">,</span> <span class="n">obj</span><span class="p">())</span>           <span class="c1"># self.fitness = FitnessMax()</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="fm">__init__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__init__</span><span class="p">:</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>        <span class="n">base</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">)</span>       <span class="c1"># 调 list.__init__(self, *args)</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span> <span class="o">=</span> <span class="n">init_type</span>
+</span></code></pre></div>
+<p>之后 <code>Individual([1,2,3])</code> 就走这个 <code>init_type</code>：先造 fitness 实例，再调 <code>list.__init__</code> 初始化容器内容。</p>
+<h3 id="3-class_replacers-arrayarraynumpyndarray-deepcopy">③ <code>class_replacers</code> 修正 <code>array.array</code>/<code>numpy.ndarray</code> 的 deepcopy 坑<a class="headerlink" href="#3-class_replacers-arrayarraynumpyndarray-deepcopy" title="Permanent link">&para;</a></h3>
+<p><code>array.array</code> 和 <code>numpy.ndarray</code> 的 <code>__deepcopy__</code> 是 C 层实现，<strong>只拷数据不拷 <code>__dict__</code></strong>（即不拷 Python 层挂的属性如 <code>fitness</code>）。直接继承会导致 <code>deepcopy(ind).fitness</code> 抛 <code>AttributeError</code>。</p>
+<p><strong>为什么 C 层不拷 <code>__dict__</code>？</strong> CPython 的 <code>array.array</code>/<code>numpy.ndarray</code> 在 C 层定义，<code>__deepcopy__</code> 走 C 的 <code>__reduce_ex__</code>/<code>__copy__</code> 路径，该路径只处理 C 结构里的数据缓冲区，不知道 Python 层的 <code>__dict__</code>（子类才加的）。这是"内置类型子类化"的经典陷阱。</p>
+<p>DEAP 的解法：定义替换子类 <code>_array</code>/<code>_numpy_array</code> 重写 <code>__deepcopy__</code> 拷贝 <code>__dict__</code>，注册进 <code>class_replacers</code>。<code>create</code> 时若 <code>base</code> 在表里，换成替换类再继承：</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">if</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">class_replacers</span><span class="p">:</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">base</span> <span class="o">=</span> <span class="n">class_replacers</span><span class="p">[</span><span class="n">base</span><span class="p">]</span>    <span class="c1"># array.array → _array</span>
+</span></code></pre></div>
+<h3 id="4-__reduce__-copyregpickle">④ <code>__reduce__</code> + <code>copyreg.pickle</code> 让动态类可序列化<a class="headerlink" href="#4-__reduce__-copyregpickle" title="Permanent link">&para;</a></h3>
+<p><code>multiprocessing</code> 并行评估要 pickle 个体，pickle 个体要先 pickle 它的类。但动态创建的类不在任何模块的源码里，pickle 默认按"模块名.类名"查找，找不到 → 抛错。</p>
+<p>解法：给 <code>MetaCreator</code> 定义 <code>__reduce__</code> 返回 <code>(meta_create, (name, base, dct))</code>，告诉 pickle"重建这个类就调 <code>meta_create(name, base, dct)</code>"。<code>copyreg.pickle(MetaCreator, ...)</code> 注册让 pickle 知道对 MetaCreator 创建的类用这个 reduce。于是 pickle 时序列化的是"重建指令"，loads 时重新 <code>meta_create</code> 造出类并注册回全局。</p>
+<hr />
+<h2 id="mini_deapbasecreatorpy">三、逐段精读 <code>mini_deap/base/creator.py</code><a class="headerlink" href="#mini_deapbasecreatorpy" title="Permanent link">&para;</a></h2>
+<h3 id="31-class_replacers-_array-_numpy_array">3.1 <code>class_replacers</code> 与 <code>_array</code> / <code>_numpy_array</code><a class="headerlink" href="#31-class_replacers-_array-_numpy_array" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">class_replacers</span> <span class="o">=</span> <span class="p">{}</span>   <span class="c1"># base 类 → 替换类</span>
+</span></code></pre></div>
+<p><code>_array(array.array)</code> 关键方法：</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nd">@staticmethod</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">seq</span><span class="o">=</span><span class="p">()):</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">_array</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">typecode</span><span class="p">,</span> <span class="n">seq</span><span class="p">)</span>
+</span></code></pre></div>
+<p><code>array.array</code> 需要 <code>typecode</code>（如 <code>"f"</code> 单精度浮点）。<code>cls.typecode</code> 从子类的类属性取 —— 所以 <code>create("Ind", array.array, typecode="f", ...)</code> 时 <code>typecode="f"</code> 是字符串（非类型）→ 进 <code>dict_cls</code> → 类属性。<code>__new__</code> 时 <code>cls.typecode</code> 拿到 <code>"f"</code>。</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="p">):</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">copy_</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>              <span class="c1"># 用 __new__ 造同类型空数组</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">memo</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)]</span> <span class="o">=</span> <span class="n">copy_</span>                       <span class="c1"># 登记，防循环引用</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">copy_</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">,</span> <span class="n">memo</span><span class="p">))</span>  <span class="c1"># 拷 Python 层属性</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="k">return</span> <span class="n">copy_</span>
+</span></code></pre></div>
+<p><code>memo[id(self)] = copy_</code> 必须在拷贝 <code>__dict__</code> <strong>之前</strong>登记，否则 <code>__dict__</code> 里若有指回 self 的引用会无限递归。<code>memo</code> 是 <code>{id(源): 副本}</code> 字典，deepcopy 协议用它打破循环。</p>
+<p><code>_numpy_array</code> 同理，额外用 <code>numpy.array(list(iterable)).view(cls)</code> 把数组 view 成子类（保留 numpy 的向量化操作 + 子类属性）。</p>
+<h3 id="32-metacreator">3.2 <code>MetaCreator</code> 元类<a class="headerlink" href="#32-metacreator" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">MetaCreator</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">dct</span><span class="p">):</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">MetaCreator</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">base</span><span class="p">,),</span> <span class="n">dct</span><span class="p">)</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">dct</span><span class="p">):</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>        <span class="o">...</span>   <span class="c1"># 分发 + 改写 __init__</span>
+</span></code></pre></div>
+<p><strong><code>__new__</code> vs <code>__init__</code>（元类版）</strong>：
+- <code>__new__</code> 造出类对象本身（分配内存、建类）。这里调 <code>type.__new__</code> 造一个继承 <code>(base,)</code> 的类。
+- <code>__init__</code> 配置已造好的类（设属性、改写方法）。这里分发 <code>dct</code>、改写 <code>cls.__init__</code>。</p>
+<p>注意元类的 <code>cls</code> 参数是<strong>正在创建的类</strong>（不是类的实例），<code>name/base/dct</code> 是 <code>MetaCreator(name, base, dct)</code> 调用时的参数。</p>
+<p><strong><code>init_type</code> 闭包变量捕获</strong>：<code>init_type</code> 定义在 <code>MetaCreator.__init__</code> 内部，捕获外层的 <code>dict_inst</code> 和 <code>base</code>。每次 <code>MetaCreator.__init__</code> 调用（即每次 create）产生新的 <code>dict_inst</code>/<code>base</code>，对应一个新的 <code>init_type</code> 闭包。赋给 <code>cls.__init__</code> 后，该类的实例化就走这个定制 init。不同动态类的 <code>__init__</code> 互不干扰（各自闭包）。</p>
+<p><strong><code>base.__init__ is not object.__init__</code> 的所有情况</strong>：
+- <code>base=list</code>：<code>list.__init__</code> 自定义过 → True → 调 <code>list.__init__(self, *args)</code> 初始化列表内容。
+- <code>base=object</code>：<code>object.__init__</code> 是默认 → False → 不调（避免传参炸，<code>object.__init__</code> 不接受额外参数）。
+- <code>base=用户类且没写 __init__</code>：继承 <code>object.__init__</code> → <code>is</code> 判断为 True（同一函数对象）→ 不调。
+- <code>base=用户类且写了 __init__</code>：→ True → 调。</p>
+<h3 id="33-meta_create-globals">3.3 <code>meta_create</code> + <code>globals()</code> 注册<a class="headerlink" href="#33-meta_create-globals" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">meta_create</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">dct</span><span class="p">):</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">class_</span> <span class="o">=</span> <span class="n">MetaCreator</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">dct</span><span class="p">)</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="nb">globals</span><span class="p">()[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">class_</span>      <span class="c1"># 注册到本模块全局</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="k">return</span> <span class="n">class_</span>
+</span></code></pre></div>
+<p><code>globals()[name] = class_</code> 让动态类能通过 <code>creator.Individual</code> 访问（因为模块全局 = 模块属性）。也让 <code>pickle.loads</code> 重建类时，<code>meta_create</code> 把类重新注册回全局，后续引用能找到。</p>
+<h3 id="34-create">3.4 <code>create</code> 入口<a class="headerlink" href="#34-create" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>              <span class="c1"># 重复创建警告</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="k">if</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">class_replacers</span><span class="p">:</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>        <span class="n">base</span> <span class="o">=</span> <span class="n">class_replacers</span><span class="p">[</span><span class="n">base</span><span class="p">]</span>    <span class="c1"># array/numpy 替换</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="n">meta_create</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">kargs</span><span class="p">)</span>
+</span></code></pre></div>
+<p>重复创建同名类会<strong>覆盖</strong>（不是报错），deap 选择警告而非禁止，因为交互式使用中重定义常见。警告让你意识到旧类被覆盖了（已存在的实例仍用旧类，新实例用新类，可能混淆）。</p>
+<p><strong>完整调用追踪</strong>：<code>create("Individual", list, fitness=FitnessMax)</code>：
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>create(&quot;Individual&quot;, list, fitness=FitnessMax)
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>  → base=list 不在 class_replacers，不替换
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>  → meta_create(&quot;Individual&quot;, list, {&quot;fitness&quot;: FitnessMax})
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    → MetaCreator(&quot;Individual&quot;, list, {&quot;fitness&quot;: FitnessMax})
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>      → __new__: type.__new__(MetaCreator, &quot;Individual&quot;, (list,), dct) 造类对象
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>      → __init__: 分发 dct
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>        → FitnessMax 是类型 → dict_inst[&quot;fitness&quot;] = FitnessMax
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>        → 定义 init_type 捕获 dict_inst={fitness: FitnessMax}, base=list
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>        → cls.__init__ = init_type
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>        → cls.reduce_args = (&quot;Individual&quot;, list, {&quot;fitness&quot;: FitnessMax})
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>    → globals()[&quot;Individual&quot;] = cls
+</span></code></pre></div>
+之后 <code>Individual([1,2,3])</code>：
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>Individual([1,2,3]) → init_type(self, [1,2,3])
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>  → setattr(self, &quot;fitness&quot;, FitnessMax())   # self.fitness = FitnessMax()
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>  → list.__init__(self, [1,2,3])              # self = [1,2,3]
+</span></code></pre></div></p>
+<hr />
+<h2 id="deap">四、和 deap 原版对照<a class="headerlink" href="#deap" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>本教学版</th>
+<th>deap <code>creator.py</code></th>
+<th>差异</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MetaCreator</code> 全部逻辑</td>
+<td>同</td>
+<td>完全保留</td>
+</tr>
+<tr>
+<td><code>_array</code> / <code>_numpy_array</code></td>
+<td>同</td>
+<td>完全保留</td>
+</tr>
+<tr>
+<td><code>__reduce__</code> + <code>copyreg.pickle</code></td>
+<td>同</td>
+<td>完全保留</td>
+</tr>
+<tr>
+<td>重复警告消息</td>
+<td>略短</td>
+<td>语义一致</td>
+</tr>
+</tbody>
+</table>
+<p><strong>本阶段无实质简化</strong>，creator 核心紧凑且全部是机制性代码，全保留。</p>
+<hr />
+<h2 id="_2">五、常见陷阱<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong><code>create("Ind", array.array, fitness=...)</code> 忘传 <code>typecode</code></strong>：<code>_array.__new__</code> 访问 <code>cls.typecode</code> 抛 <code>AttributeError</code>。必须 <code>typecode="f"</code>/<code>"i"</code> 等。</li>
+<li><strong><code>create("Ind", numpy.ndarray, fitness=...)</code> 后用 <code>Ind([1,2,3])</code></strong>：能跑，但 numpy 数组操作返回的是裸 <code>numpy.ndarray</code> 不是 <code>Ind</code>（除非用 <code>view</code>）。算子里注意。</li>
+<li><strong>重复 <code>create</code> 同名类</strong>：旧实例仍用旧类（类对象本身没变，只是全局名指向新类），<code>isinstance</code> 判断可能失效。生产代码避免重名。</li>
+<li><strong>动态类在 multiprocessing 里</strong>：依赖 <code>__reduce__</code> + <code>copyreg.pickle</code>。如果子进程没 import creator 模块，pickle 重建时找不到 <code>meta_create</code> → 抛错。确保子进程导入了 <code>mini_deap.base.creator</code>。</li>
+<li><strong><code>fitness=FitnessMax</code> vs <code>fitness=FitnessMax()</code></strong>：前者（传类型）每实例造新 fitness；后者（传实例）所有实例共享同一个 fitness 实例 → 改一个全变，几乎肯定不是你想要的。<strong>永远传类型，不传实例。</strong></li>
+<li><strong><code>weights</code> 必须是 tuple 不是 list</strong>：<code>create("Fit", Fitness, weights=[1.0])</code> 能跑（list 是 Sequence），但可变，被意外改了全类实例都受影响。约定 tuple。</li>
+<li><strong>元类冲突</strong>：如果 base 自己用了别的元类（如 ABCMeta），<code>MetaCreator</code> 和它可能冲突（Python 3 要求元类是基类元类的子类）。DEAP 的 Fitness 没用 ABCMeta 正是为此避坑（见阶段 1）。</li>
+</ol>
+<hr />
+<h2 id="python">六、Python 语言特性备忘<a class="headerlink" href="#python" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>元类</strong>：<code>class Foo(metaclass=Meta)</code> 时，<code>Foo</code> 由 <code>Meta("Foo", bases, dict)</code> 创建。元类拦截类的创建过程，可改写类的方法、注入属性。<code>type</code> 是默认元类。</li>
+<li><strong><code>type.__new__(cls, name, bases, dct)</code></strong>：造一个新类。<code>name</code> 是类名（字符串），<code>bases</code> 是基类元组，<code>dct</code> 是类命名空间字典。</li>
+<li><strong><code>isinstance(obj, type)</code></strong>：判断 <code>obj</code> 是不是"一个类"。<code>isinstance(int, type)</code> True（int 是类），<code>isinstance(42, type)</code> False（42 是 int 的实例，不是类）。</li>
+<li><strong><code>__new__</code> vs <code>__init__</code></strong>：<code>__new__</code> 造实例（分配内存），<code>__init__</code> 初始化实例。对不可变类型（tuple/str/array）必须用 <code>__new__</code> 因为 <code>__init__</code> 时数据已定。元类的 <code>__new__</code>/<code>__init__</code> 同理但作用于"类对象"。</li>
+<li><strong><code>copyreg.pickle(cls, reduce_func)</code></strong>：注册 <code>cls</code> 类型的对象 pickle 时用 <code>reduce_func</code>。<code>reduce_func(obj)</code> 返回 <code>(callable, args)</code>，pickle 时存这个对，loads 时调 <code>callable(*args)</code> 重建。</li>
+<li><strong><code>globals()</code></strong>：返回当前模块的全局命名空间字典。<code>globals()[name] = cls</code> 等价于在模块顶层写 <code>name = cls</code>，但动态。</li>
+<li><strong>闭包捕获</strong>：内层函数引用外层变量时，捕获的是<strong>变量绑定的值</strong>（Python 3 闭包捕获变量本身，late binding）。<code>init_type</code> 捕获 <code>dict_inst</code>/<code>base</code>，每次 <code>MetaCreator.__init__</code> 调用产生新闭包。</li>
+</ul>
+<hr />
+<h2 id="_3">七、关键收获<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>元编程把"写类"数据化</strong>：配置（基类 + 属性）当参数，工厂产出定制类，消除组合爆炸。</li>
+<li><strong>用 <code>isinstance(obj, type)</code> 区分"要实例化的类型"和"直接存的值"</strong> —— 一个判断统一了实例属性/类属性的分发，是 <code>create</code> 的灵魂。</li>
+<li><strong>元类改写 <code>__init__</code> 注入定制初始化</strong>：<code>init_type</code> 闭包捕获分发配置，每个动态类有独立 init。<code>type()</code> 三参数做不到（无法注入实例化逻辑）。</li>
+<li><strong>C 层类型的 deepcopy 坑用替换子类修</strong>：<code>array</code>/<code>numpy</code> 不拷 <code>__dict__</code>，定义子类重写 <code>__deepcopy__</code>，用 <code>class_replacers</code> 在 create 时透明替换。</li>
+<li><strong>动态类要可 pickle 必须实现 <code>__reduce__</code></strong>：返回重建指令 <code>(meta_create, args)</code>，配合 <code>copyreg.pickle</code> 注册，让并行序列化能工作。</li>
+<li><strong>传类型不传实例</strong>（<code>fitness=FitnessMax</code> 不是 <code>fitness=FitnessMax()</code>）—— 前者每实例独立，后者共享，99% 场景要前者。</li>
+</ol>
+<hr />
+<h2 id="_4">八、思考题<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<ol>
+<li>如果想给 <code>create</code> 加一个"实例属性也支持传实例时 deepcopy 一份"的模式（即 <code>fitness=some_instance</code> 时每实例 deepcopy 一份），怎么改 <code>init_type</code>？</li>
+<li><code>base.__init__ is not object.__init__</code> 这个判断在 <code>base</code> 是 <code>list</code> 时为 True（list 重写了 <strong>init</strong>），在 <code>base</code> 是 <code>object</code> 时为 False。如果 base 是用户自定义类且没写 <code>__init__</code>，这个判断结果是什么？会出错吗？</li>
+<li>为什么 <code>memo[id(self)] = copy_</code> 必须在 deepcopy <code>__dict__</code> 之前登记？（提示：自引用）</li>
+<li><code>create</code> 把类注册到 <code>creator</code> 模块的 <code>globals()</code>。如果两个独立项目都用 <code>create("Individual", ...)</code>，会冲突吗？怎么隔离？（提示：deap 没隔离，靠自觉起唯一名）</li>
+<li><code>type()</code> 三参数造类 vs 元类造类：前者 <code>type("Foo", (list,), dct)</code> 把 dct 全挂类属性，后者能改写 <code>__init__</code> 注入实例化逻辑。如果只想加类属性（不要实例属性），用 <code>type()</code> 三参数够吗？DEAP 为什么统一用元类而非混用？</li>
+</ol>
+<hr />
+<h2 id="_5">九、实战示例与性能<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h3 id="91-create">9.1 create 的各种用法<a class="headerlink" href="#91-create" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">array</span><span class="o">,</span><span class="w"> </span><span class="nn">numpy</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">mini_deap.base.fitness</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fitness</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">mini_deap.base.creator</span><span class="w"> </span><span class="kn">import</span> <span class="n">create</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="c1"># 适应度类型</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="n">create</span><span class="p">(</span><span class="s2">&quot;FitnessMax&quot;</span><span class="p">,</span> <span class="n">Fitness</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,))</span>           <span class="c1"># 单目标最大化</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="n">create</span><span class="p">(</span><span class="s2">&quot;FitnessMin&quot;</span><span class="p">,</span> <span class="n">Fitness</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,))</span>          <span class="c1"># 单目标最小化</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="n">create</span><span class="p">(</span><span class="s2">&quot;FitnessMulti&quot;</span><span class="p">,</span> <span class="n">Fitness</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">))</span>    <span class="c1"># 双目标：max f1, min f2</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="c1"># 个体类型（同一套算法可跑任意表示）</span>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="n">create</span><span class="p">(</span><span class="s2">&quot;IndList&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="n">fitness</span><span class="o">=</span><span class="n">FitnessMax</span><span class="p">)</span>             <span class="c1"># 实数/二进制 GA</span>
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="n">create</span><span class="p">(</span><span class="s2">&quot;IndSet&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">,</span> <span class="n">fitness</span><span class="o">=</span><span class="n">FitnessMax</span><span class="p">)</span>               <span class="c1"># 集合 GA</span>
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="n">create</span><span class="p">(</span><span class="s2">&quot;IndArr&quot;</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">typecode</span><span class="o">=</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="n">fitness</span><span class="o">=</span><span class="n">FitnessMax</span><span class="p">)</span>  <span class="c1"># 紧凑浮点</span>
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="n">create</span><span class="p">(</span><span class="s2">&quot;IndNp&quot;</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">fitness</span><span class="o">=</span><span class="n">FitnessMax</span><span class="p">)</span>      <span class="c1"># 向量化</span>
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>
+</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="c1"># 用法</span>
+</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="n">ind</span> <span class="o">=</span> <span class="n">IndList</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">]);</span> <span class="n">ind</span><span class="o">.</span><span class="n">fitness</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="p">(</span><span class="mf">6.0</span><span class="p">,)</span>
+</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a><span class="n">pop</span> <span class="o">=</span> <span class="p">[</span><span class="n">IndList</span><span class="p">([</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)])</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)]</span>
+</span></code></pre></div>
+<h3 id="92-vs">9.2 性能：元类创建开销 vs 手写类<a class="headerlink" href="#92-vs" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>元类创建类</strong>：<code>create(...)</code> 调一次，开销约几微秒（元类 <code>__new__</code>+<code>__init__</code>+<code>globals</code> 注册）。<strong>一次性成本</strong>，程序启动时调几次，之后不再调。</li>
+<li><strong>实例化</strong>：<code>IndList([1,2,3])</code> 走 <code>init_type</code>：一个 <code>setattr</code> + 一次 <code>list.__init__</code>。比手写类的 <code>__init__</code> 多一个 <code>setattr</code> 循环（实例属性数 × setattr），但实例属性通常就 1-2 个（fitness），开销纳秒级，可忽略。</li>
+<li><strong>真正贵的不是 create，是评估</strong>：元类开销相对评估黑盒（毫秒~秒）是 0。create 的价值在消除手写子类的重复，不在运行时性能。</li>
+</ul>
+<h3 id="93">9.3 调试技巧<a class="headerlink" href="#93" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>creator.Individual</code> 查看动态类（<code>globals()</code> 注册后可直接访问）。</li>
+<li><code>Individual.__init__</code> 是 <code>init_type</code> 闭包，<code>Individual.__init__.__code__.co_freevars</code> 能看到捕获的变量名（<code>dict_inst</code>/<code>base</code>）。</li>
+<li><code>Individual.reduce_args</code> 存了 <code>(name, base, dct)</code>，pickle 重建时用它。</li>
+</ul>
+<hr />
+<h2 id="_6">十、下一阶段预告<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<p><strong>阶段 4：tools/operators.py</strong> —— 纯函数算子库。<code>initRepeat</code>（初始化种群）、<code>selTournament</code>/<code>selBest</code>（选择）、<code>cxOnePoint</code>/<code>cxTwoPoint</code>（交叉）、<code>mutGaussian</code>/<code>mutFlipBit</code>（变异）。全部是<strong>纯函数</strong>（接 individuals 返回 individuals，无副作用），通过 <code>toolbox.register</code> 组装。关键算子给纯 Python + numpy 向量化两版对照。这是 DEAP "算子是纯函数" 思想的集中体现。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

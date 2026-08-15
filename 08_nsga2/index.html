@@ -1,0 +1,1952 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="DEAP 进化算法库教学重写 —— 保留设计思想，简化非教学细节">
+      
+      
+      
+        <link rel="canonical" href="https://wanglh39.github.io/mini_deap/08_nsga2/">
+      
+      
+        <link rel="prev" href="../07_examples/">
+      
+      
+        <link rel="next" href="../09_gp/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>阶段 8 · NSGA2 - mini_deap</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Noto Sans SC";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#8toolsemopy-nsga-ii" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="mini_deap" class="md-header__button md-logo" aria-label="mini_deap" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            mini_deap
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              阶段 8 · NSGA2
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange"  aria-label="切换深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="orange"  aria-label="切换浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="分享" aria-label="分享" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/wanglh39/mini_deap" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    wanglh39/mini_deap
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../00_overview/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  总览
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../01_fitness/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  基础
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../04_operators/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  算子与统计
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../06_algorithms/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  算法骨架
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+    
+  
+  进阶
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="mini_deap" class="md-nav__button md-logo" aria-label="mini_deap" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    mini_deap
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/wanglh39/mini_deap" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    wanglh39/mini_deap
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    总览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基础
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    基础
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_fitness/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 1 · Fitness
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_toolbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 2 · Toolbox
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_creator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 3 · Creator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    算子与统计
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    算子与统计
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_operators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 4 · 算子库
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 5 · support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    算法骨架
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    算法骨架
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_algorithms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 6 · algorithms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07_examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 7 · examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    进阶
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    进阶
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 8 · NSGA2
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 8 · NSGA2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一、背景：多目标优化有什么不同？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        二、核心设计思想
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="二、核心设计思想">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ① 非支配排序 —— 把种群分层
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ② 拥挤距离 —— 同层内的密度估计
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-nsga2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ③ NSGA2 选择 —— 前沿秩 + 拥挤距离
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        三、逐函数精读
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="三、逐函数精读">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-sortnondominated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 sortNondominated 的分层过程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-assigncrowdingdist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 assignCrowdingDist 的归一化
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-selnsga2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 selNSGA2 的整层取 + 最后一层切
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-seltournamentdcd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 selTournamentDCD —— 支配+拥挤距离锦标赛
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sbx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        四、SBX 交叉 + 多项式变异
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="四、SBX 交叉 + 多项式变异">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-cxsimulatedbinaryboundedsbx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 cxSimulatedBinaryBounded（SBX）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-mutpolynomialbounded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 mutPolynomialBounded（多项式变异）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#zdt1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        五、ZDT1 实战
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="五、ZDT1 实战">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 问题定义
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 运行结果
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-eamupluslambda-selnsga2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 为什么用 eaMuPlusLambda + selNSGA2？
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        六、和 deap 原版对照
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        七、常见陷阱
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        八、Python 语言特性备忘
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        八点五、设计权衡
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        九、关键收获
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        十、思考题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        十一、下一阶段预告
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09_gp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 9 · GP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10_cma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    阶段 10 · CMA-ES
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一、背景：多目标优化有什么不同？
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        二、核心设计思想
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="二、核心设计思想">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ① 非支配排序 —— 把种群分层
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ② 拥挤距离 —— 同层内的密度估计
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-nsga2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ③ NSGA2 选择 —— 前沿秩 + 拥挤距离
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        三、逐函数精读
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="三、逐函数精读">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-sortnondominated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 sortNondominated 的分层过程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-assigncrowdingdist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 assignCrowdingDist 的归一化
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-selnsga2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 selNSGA2 的整层取 + 最后一层切
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-seltournamentdcd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 selTournamentDCD —— 支配+拥挤距离锦标赛
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sbx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        四、SBX 交叉 + 多项式变异
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="四、SBX 交叉 + 多项式变异">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-cxsimulatedbinaryboundedsbx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 cxSimulatedBinaryBounded（SBX）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-mutpolynomialbounded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 mutPolynomialBounded（多项式变异）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#zdt1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        五、ZDT1 实战
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="五、ZDT1 实战">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 问题定义
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 运行结果
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-eamupluslambda-selnsga2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 为什么用 eaMuPlusLambda + selNSGA2？
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        六、和 deap 原版对照
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        七、常见陷阱
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        八、Python 语言特性备忘
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        八点五、设计权衡
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        九、关键收获
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        十、思考题
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        十一、下一阶段预告
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="8toolsemopy-nsga-ii">阶段 8：tools/emo.py —— NSGA-II 多目标进化算法<a class="headerlink" href="#8toolsemopy-nsga-ii" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>对应 DEAP：<code>deap/tools/emo.py</code>（原版 500+ 行含 log 版排序，本阶段约 300 行保留 standard 版）
+产出：<code>mini_deap/tools/emo.py</code> + <code>tests/tools/test_emo.py</code>（18 测试全过）+ <code>examples/nsga2_zdt1.py</code></p>
+</blockquote>
+<hr />
+<h2 id="_1">一、背景：多目标优化有什么不同？<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<p>前 7 阶段都是单目标——有一个标量 fitness，比大小就行。多目标优化完全不同：</p>
+<p><strong>例子</strong>：买车。要便宜（目标1 min）又要性能好（目标2 max）。最便宜的车性能差，性能最好的车贵。没有"两全其美"的最优解，而是一组<strong>互不支配</strong>的折中解——Pareto 前沿。</p>
+<p><strong>Pareto 支配</strong>：解 A 支配 B，当且仅当 A 在所有目标上不差于 B，且至少一个目标严格更好。
+<strong>Pareto 前沿</strong>：所有非支配解的集合——没有任何解能同时在所有目标上改进它们。</p>
+<p><strong>多目标进化的目标</strong>：
+1. <strong>接近前沿</strong>：找到的解尽量接近真实 Pareto 前沿
+2. <strong>分布均匀</strong>：前沿上的解分布均匀，不挤成一团</p>
+<p>NSGA-II（Deb 2002）用两个机制实现这两点：
+- <strong>非支配排序</strong>（前沿秩）→ 接近前沿
+- <strong>拥挤距离</strong> → 分布均匀</p>
+<hr />
+<h2 id="_2">二、核心设计思想<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h3 id="1">① 非支配排序 —— 把种群分层<a class="headerlink" href="#1" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">sortNondominated</span><span class="p">(</span><span class="n">individuals</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">first_front_only</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="c1"># 1. 统计每个 fitness 被多少个支配、支配哪些</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">fit_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fits</span><span class="p">):</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        <span class="k">for</span> <span class="n">fit_j</span> <span class="ow">in</span> <span class="n">fits</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:]:</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>            <span class="k">if</span> <span class="n">fit_i</span><span class="o">.</span><span class="n">dominates</span><span class="p">(</span><span class="n">fit_j</span><span class="p">):</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                <span class="n">dominating_fits</span><span class="p">[</span><span class="n">fit_j</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>        <span class="c1"># fit_j 被支配数+1</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>                <span class="n">dominated_fits</span><span class="p">[</span><span class="n">fit_i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fit_j</span><span class="p">)</span> <span class="c1"># fit_i 支配的列表</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>            <span class="k">elif</span> <span class="n">fit_j</span><span class="o">.</span><span class="n">dominates</span><span class="p">(</span><span class="n">fit_i</span><span class="p">):</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>                <span class="o">...</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="c1"># 2. 被支配数==0 的进第一前沿</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="c1"># 3. 第一前沿支配的个体，被支配数-1，减到0进下一前沿</span>
+</span></code></pre></div>
+<p><strong>算法</strong>（Deb 的快速非支配排序）：
+1. 两两比较所有 fitness，统计每个被多少个支配（<code>dominating_fits</code>），及它支配哪些（<code>dominated_fits</code>）
+2. 被支配数 == 0 的进第一前沿（Pareto 最优）
+3. 对第一前沿的每个个体，把它支配的个体的被支配数减 1，减到 0 的进下一前沿
+4. 重复直到排完 k 个</p>
+<p><strong>复杂度</strong> O(M·N²)，M 目标数，N 个体数。两两比较是 N²，每次比较是 M 维。</p>
+<p><strong>为什么按 fitness 去重？</strong> <code>map_fit_ind = defaultdict(list)</code> 把相同 fitness 的个体合并。支配关系只取决于 fitness 值，相同 fitness 的个体共享支配关系，避免重复比较。</p>
+<h3 id="2">② 拥挤距离 —— 同层内的密度估计<a class="headerlink" href="#2" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">assignCrowdingDist</span><span class="p">(</span><span class="n">individuals</span><span class="p">):</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nobj</span><span class="p">):</span>                           <span class="c1"># 对每个目标维</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>        <span class="n">crowd</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>           <span class="c1"># 按该维排序</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>        <span class="n">distances</span><span class="p">[</span><span class="n">crowd</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>       <span class="c1"># 边界赋 inf</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>        <span class="n">distances</span><span class="p">[</span><span class="n">crowd</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>        <span class="n">norm</span> <span class="o">=</span> <span class="n">nobj</span> <span class="o">*</span> <span class="p">(</span><span class="n">crowd</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">crowd</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>  <span class="c1"># 归一化</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        <span class="k">for</span> <span class="n">prev</span><span class="p">,</span> <span class="n">cur</span><span class="p">,</span> <span class="n">nxt</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">crowd</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">crowd</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">crowd</span><span class="p">[</span><span class="mi">2</span><span class="p">:]):</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>            <span class="n">distances</span><span class="p">[</span><span class="n">cur</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">nxt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">prev</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="n">norm</span>  <span class="c1"># 两侧邻居距离</span>
+</span></code></pre></div>
+<p><strong>拥挤距离</strong>：个体在目标空间中两侧邻居的矩形包围盒周长。
+- <strong>边界个体</strong>（每维的 min/max）距离 = inf，保证不被淘汰（维持前沿范围）
+- <strong>中间个体</strong>距离 = Σ_维 (f_{i+1} - f_{i-1}) / (f_max - f_min)，归一化后累加
+- 距离大 → 周围稀疏 → 选择优先（维持分布均匀）</p>
+<p><strong>为什么用 inf 而非大数？</strong> inf 保证边界个体在任何情况下优先于中间个体。用大数可能被多个中间个体的累加超过。</p>
+<h3 id="3-nsga2">③ NSGA2 选择 —— 前沿秩 + 拥挤距离<a class="headerlink" href="#3-nsga2" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">selNSGA2</span><span class="p">(</span><span class="n">individuals</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">pareto_fronts</span> <span class="o">=</span> <span class="n">sortNondominated</span><span class="p">(</span><span class="n">individuals</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>  <span class="c1"># 分层</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="k">for</span> <span class="n">front</span> <span class="ow">in</span> <span class="n">pareto_fronts</span><span class="p">:</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        <span class="n">assignCrowdingDist</span><span class="p">(</span><span class="n">front</span><span class="p">)</span>                     <span class="c1"># 每层算拥挤距离</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">chosen</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">pareto_fronts</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>         <span class="c1"># 整层取前面的</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">k</span> <span class="o">=</span> <span class="n">k</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">chosen</span><span class="p">)</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="k">if</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>                                         <span class="c1"># 最后一层放不下</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>        <span class="n">sorted_front</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">pareto_fronts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>                              <span class="n">key</span><span class="o">=</span><span class="n">attrgetter</span><span class="p">(</span><span class="s2">&quot;fitness.crowding_dist&quot;</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>        <span class="n">chosen</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">sorted_front</span><span class="p">[:</span><span class="n">k</span><span class="p">])</span>               <span class="c1"># 按拥挤距离取前 k 个</span>
+</span></code></pre></div>
+<p><strong>选择策略</strong>：
+1. 整层整层地取前面的前沿（前沿秩优先）
+2. 最后一层放不下时，按拥挤距离排序取前几个（同层内拥挤距离优先）</p>
+<p><strong>为什么这样选？</strong> 前沿秩保证"接近前沿"（第1层比第2层优），拥挤距离保证"分布均匀"（同层内稀疏的优先）。两个目标分治。</p>
+<hr />
+<h2 id="_3">三、逐函数精读<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h3 id="31-sortnondominated">3.1 sortNondominated 的分层过程<a class="headerlink" href="#31-sortnondominated" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># 第一前沿：被支配数==0</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">fit_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fits</span><span class="p">):</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="k">for</span> <span class="n">fit_j</span> <span class="ow">in</span> <span class="n">fits</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:]:</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>        <span class="k">if</span> <span class="n">fit_i</span><span class="o">.</span><span class="n">dominates</span><span class="p">(</span><span class="n">fit_j</span><span class="p">):</span> <span class="o">...</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="k">if</span> <span class="n">dominating_fits</span><span class="p">[</span><span class="n">fit_i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>        <span class="n">current_front</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fit_i</span><span class="p">)</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1"># 后续前沿：当前前沿支配的个体，被支配数减到0</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="k">while</span> <span class="n">pareto_sorted</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">:</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="k">for</span> <span class="n">fit_p</span> <span class="ow">in</span> <span class="n">current_front</span><span class="p">:</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>        <span class="k">for</span> <span class="n">fit_d</span> <span class="ow">in</span> <span class="n">dominated_fits</span><span class="p">[</span><span class="n">fit_p</span><span class="p">]:</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>            <span class="n">dominating_fits</span><span class="p">[</span><span class="n">fit_d</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>            <span class="k">if</span> <span class="n">dominating_fits</span><span class="p">[</span><span class="n">fit_d</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>                <span class="n">next_front</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fit_d</span><span class="p">)</span>
+</span></code></pre></div>
+<p><strong>关键优化</strong>：不重复比较。排第一前沿时已建好 <code>dominated_fits</code>（每个 fitness 支配哪些），后续前沿只需遍历当前前沿的 <code>dominated_fits</code>，把被支配数减 1。减到 0 说明它的所有支配者都已进入前面的前沿，它属于下一前沿。</p>
+<p><strong>k 截断</strong>：排到第 k 个个体就停，不排完所有层。NSGA2 只需选 k 个，后面的层不用排。</p>
+<h3 id="32-assigncrowdingdist">3.2 assignCrowdingDist 的归一化<a class="headerlink" href="#32-assigncrowdingdist" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">norm</span> <span class="o">=</span> <span class="n">nobj</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">crowd</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">crowd</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>  <span class="c1"># 该维范围 × nobj</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">for</span> <span class="n">prev</span><span class="p">,</span> <span class="n">cur</span><span class="p">,</span> <span class="n">nxt</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">crowd</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">crowd</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">crowd</span><span class="p">[</span><span class="mi">2</span><span class="p">:]):</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">distances</span><span class="p">[</span><span class="n">cur</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">nxt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">prev</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="n">norm</span>
+</span></code></pre></div>
+<p><strong>归一化因子</strong> <code>nobj * (f_max - f_min)</code>：
+- <code>(f_max - f_min)</code> 把各维缩放到 [0,1]（不同目标量纲可能差很大）
+- <code>nobj</code> 使总距离在 [0, 1] 范围（每维贡献 1/nobj）</p>
+<p><strong>zip 三元组</strong> <code>crowd[:-2], crowd[1:-1], crowd[2:]</code>：对每个中间个体，取它的前一个和后一个（按该维排序）。<code>(nxt - prev)</code> 是两侧邻居在该维的距离——包围盒边长。</p>
+<h3 id="33-selnsga2">3.3 selNSGA2 的整层取 + 最后一层切<a class="headerlink" href="#33-selnsga2" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">chosen</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">pareto_fronts</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>   <span class="c1"># 前面的层全取</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">k</span> <span class="o">=</span> <span class="n">k</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">chosen</span><span class="p">)</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">if</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">sorted_front</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">pareto_fronts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="n">attrgetter</span><span class="p">(</span><span class="s2">&quot;fitness.crowding_dist&quot;</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">chosen</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">sorted_front</span><span class="p">[:</span><span class="n">k</span><span class="p">])</span>         <span class="c1"># 最后一层按拥挤距离取</span>
+</span></code></pre></div>
+<p><strong>chain(*fronts[:-1])</strong>：把前面的前沿展平成一个列表。<code>[:-1]</code> 排除最后一层（可能放不下）。</p>
+<p><strong>最后一层切</strong>：按 <code>fitness.crowding_dist</code> 降序排，取前 k 个。拥挤距离大的优先——维持前沿分布均匀。</p>
+<h3 id="34-seltournamentdcd">3.4 selTournamentDCD —— 支配+拥挤距离锦标赛<a class="headerlink" href="#34-seltournamentdcd" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">tourn</span><span class="p">(</span><span class="n">ind1</span><span class="p">,</span> <span class="n">ind2</span><span class="p">):</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="k">if</span> <span class="n">ind1</span><span class="o">.</span><span class="n">fitness</span><span class="o">.</span><span class="n">dominates</span><span class="p">(</span><span class="n">ind2</span><span class="o">.</span><span class="n">fitness</span><span class="p">):</span> <span class="k">return</span> <span class="n">ind1</span>    <span class="c1"># 支配优先</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="k">elif</span> <span class="n">ind2</span><span class="o">.</span><span class="n">fitness</span><span class="o">.</span><span class="n">dominates</span><span class="p">(</span><span class="n">ind1</span><span class="o">.</span><span class="n">fitness</span><span class="p">):</span> <span class="k">return</span> <span class="n">ind2</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="k">if</span> <span class="n">ind1</span><span class="o">.</span><span class="n">fitness</span><span class="o">.</span><span class="n">crowding_dist</span> <span class="o">&lt;</span> <span class="n">ind2</span><span class="o">.</span><span class="n">fitness</span><span class="o">.</span><span class="n">crowding_dist</span><span class="p">:</span> <span class="k">return</span> <span class="n">ind2</span>  <span class="c1"># 拥挤距离次之</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="k">elif</span> <span class="n">ind1</span><span class="o">.</span><span class="n">fitness</span><span class="o">.</span><span class="n">crowding_dist</span> <span class="o">&gt;</span> <span class="n">ind2</span><span class="o">.</span><span class="n">fitness</span><span class="o">.</span><span class="n">crowding_dist</span><span class="p">:</span> <span class="k">return</span> <span class="n">ind1</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="k">return</span> <span class="n">ind1</span> <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mf">0.5</span> <span class="k">else</span> <span class="n">ind2</span>         <span class="c1"># 都相同随机</span>
+</span></code></pre></div>
+<p><strong>比较优先级</strong>：支配关系 &gt; 拥挤距离 &gt; 随机。这是 NSGA2 原版的锦标赛选择。</p>
+<p><strong>为什么需要它？</strong> selNSGA2 是"一次性选 k 个"的批量选择。selTournamentDCD 是"两两比赛"的锦标赛选择，适合 eaSimple（每代 select(pop, len(pop))）。两种选择方式对应不同算法流程。</p>
+<hr />
+<h2 id="sbx">四、SBX 交叉 + 多项式变异<a class="headerlink" href="#sbx" title="Permanent link">&para;</a></h2>
+<p>NSGA2 的标准配套算子，适合有界连续空间。</p>
+<h3 id="41-cxsimulatedbinaryboundedsbx">4.1 cxSimulatedBinaryBounded（SBX）<a class="headerlink" href="#41-cxsimulatedbinaryboundedsbx" title="Permanent link">&para;</a></h3>
+<p>模拟二进制交叉：在连续空间模拟二进制串交叉的效果。<code>eta</code> 控制子代与父代的相似度——大 eta 子代像父代，小 eta 子代差异大。</p>
+<p>核心：对每维，以 0.5 概率交叉。用 beta 分布生成子代位置，裁剪到 [low, up]。</p>
+<h3 id="42-mutpolynomialbounded">4.2 mutPolynomialBounded（多项式变异）<a class="headerlink" href="#42-mutpolynomialbounded" title="Permanent link">&para;</a></h3>
+<p>多项式变异：在个体附近做多项式分布的扰动。<code>eta</code> 控制变异强度——大 eta 变异小，小 eta 变异大。每维以 <code>indpb</code> 概率变异，裁剪到 [low, up]。</p>
+<p><strong>为什么用这两个而非 cxBlend/mutGaussian？</strong> SBX 和多项式变异是 NSGA2 原版实现，有理论保证（分布形状与前沿几何匹配）。cxBlend/mutGaussian 也能用但收敛性差些。</p>
+<hr />
+<h2 id="zdt1">五、ZDT1 实战<a class="headerlink" href="#zdt1" title="Permanent link">&para;</a></h2>
+<h3 id="51">5.1 问题定义<a class="headerlink" href="#51" title="Permanent link">&para;</a></h3>
+<p>ZDT1（Zitzler-Deb-Thiele 1）：
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>f1(x) = x1
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>g(x) = 1 + 9/(n-1) * sum(x[1:])
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>f2(x) = g * (1 - sqrt(f1/g))
+</span></code></pre></div>
+x ∈ [0,1]^30，最小化 (f1, f2)。理论前沿：f2 = 1 - sqrt(f1), f1 ∈ [0,1]。</p>
+<h3 id="52">5.2 运行结果<a class="headerlink" href="#52" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>gen  f1_min    f2_min
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>0    0.029     2.620
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>...
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>50   0.000     0.333
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>Pareto 前沿采样：
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>  f1=0.081, f2=0.994
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>  f1=0.745, f2=0.333
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>  f1=0.000, f2=1.408
+</span></code></pre></div>
+<p><strong>前沿形状</strong>：f1 从 0 到 0.745，f2 从 0.33 到 1.41。理论前沿 f2 = 1 - sqrt(f1)：
+- f1=0 → f2=1（前沿起点）
+- f1=1 → f2=0（前沿终点）</p>
+<p>50 代的收敛还不够深（f1=0 时 f2 应≈1，实际 1.41；f1=0.745 时 f2 应≈0.137，实际 0.33），但前沿的<strong>形状和方向</strong>已正确显现。增加 ngen 可逼近理论前沿。</p>
+<h3 id="53-eamupluslambda-selnsga2">5.3 为什么用 eaMuPlusLambda + selNSGA2？<a class="headerlink" href="#53-eamupluslambda-selnsga2" title="Permanent link">&para;</a></h3>
+<p>NSGA2 的流程 = 合并父子 → 非支配排序 → 按前沿秩+拥挤距离选。<code>eaMuPlusLambda</code> 的"父子合并选"正好是这个时机——<code>select(population + offspring, mu)</code> 时调 <code>selNSGA2</code>，对合并种群分层选。</p>
+<hr />
+<h2 id="deap">六、和 deap 原版对照<a class="headerlink" href="#deap" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>本教学版</th>
+<th>deap <code>emo.py</code></th>
+<th>差异</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sortNondominated</code></td>
+<td>同</td>
+<td>完全保留（standard 版）</td>
+</tr>
+<tr>
+<td><code>assignCrowdingDist</code></td>
+<td>同</td>
+<td>完全保留</td>
+</tr>
+<tr>
+<td><code>selNSGA2</code></td>
+<td>同</td>
+<td>完全保留（只支持 nd='standard'）</td>
+</tr>
+<tr>
+<td><code>selTournamentDCD</code></td>
+<td>同</td>
+<td>完全保留</td>
+</tr>
+<tr>
+<td><code>cxSimulatedBinaryBounded</code></td>
+<td>同</td>
+<td>简化：low/up 标量，非序列</td>
+</tr>
+<tr>
+<td><code>mutPolynomialBounded</code></td>
+<td>同</td>
+<td>简化：low/up 标量，非序列</td>
+</tr>
+<tr>
+<td><code>sortLogNondominated</code></td>
+<td>deap 有</td>
+<td>砍掉：log 版是 O(M·N·logN) 优化，复杂度高，教学版用 standard 够了</td>
+</tr>
+</tbody>
+</table>
+<p><strong>保留全部常用功能</strong>，只砍掉 log 版非支配排序（性能优化，实现复杂，教学价值低）。</p>
+<hr />
+<h2 id="_4">七、常见陷阱<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>weights 正负决定支配方向</strong>：<code>weights=(-1.0,-1.0)</code> 最小化，<code>dominates</code> 内部用 wvalues = weights × values 比较。搞反会往错误方向分层。</li>
+<li><strong>忘先调 assignCrowdingDist 就用 selTournamentDCD</strong>：<code>crowding_dist</code> 属性不存在 → AttributeError。selNSGA2 内部自动调，selTournamentDCD 需手动调。</li>
+<li><strong>相同 fitness 的个体</strong>：sortNondominated 按 fitness 去重，相同 fitness 的个体共享支配关系。assignCrowdingDist 对相同 fitness 会 <code>continue</code>（该维范围==0）。</li>
+<li><strong>k &gt; len(individuals)</strong>：selNSGA2 不会报错但返回的列表可能不足 k 个（前沿不够多）。</li>
+<li><strong>SBX 的 eta 太大</strong>：eta=20 子代几乎等于父代，收敛极慢。常用 eta=15-20。</li>
+<li><strong>多项式变异的 indpb</strong>：通常 <code>1/n</code>（每维期望变异1次）。太大破坏前沿分布。</li>
+</ol>
+<hr />
+<h2 id="python">八、Python 语言特性备忘<a class="headerlink" href="#python" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong><code>defaultdict(list)</code></strong>：<code>map_fit_ind[fit].append(ind)</code>，不存在的 key 自动建空 list。省去 <code>if fit not in d: d[fit] = []</code>。</li>
+<li><strong><code>itertools.chain(*lists)</code></strong>：把多个列表展平成一个迭代器。<code>chain(*fronts[:-1])</code> 把前面的前沿拼成一个列表。</li>
+<li><strong><code>attrgetter("fitness.crowding_dist")</code></strong>：点号路径属性获取，等价 <code>lambda x: x.fitness.crowding_dist</code>。sorted 的 key 函数。</li>
+<li><strong><code>zip(a[:-2], a[1:-1], a[2:])</code></strong>：三元滑动窗口。对每个中间元素取前一个和后一个。经典用法。</li>
+<li><strong><code>float("inf")</code></strong>：正无穷。比任何有限数大。边界个体的拥挤距离设 inf 保证优先。</li>
+</ul>
+<hr />
+<h2 id="_5">八点五、设计权衡<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<p><strong>为什么只实现 standard 版非支配排序，砍掉 log 版？</strong>
+log 版（sortLogNondominated）用分治+中位数切分，复杂度 O(M·N·logN)，比 standard 的 O(M·N²) 快。但实现极复杂（splitA/sweepA/sortNDHelperB 等十几个辅助函数），教学价值低。standard 版直接两两比较，逻辑清晰，足以理解非支配排序的思想。性能上 N&lt;1000 时 standard 够用。</p>
+<p><strong>为什么 selNSGA2 整层取而非逐个选？</strong>
+整层取保证前沿完整性——第1层全选，第2层全选，...，最后一层切。逐个选可能把第1层的某些个体漏选（如果按拥挤距离逐个排，边界个体可能被中间个体超过）。整层取保证前沿秩的严格优先。</p>
+<p><strong>为什么拥挤距离而非 ε-支配或参考点？</strong>
+拥挤距离是 NSGA2 原版方法，简单直观（两侧邻居距离）。ε-支配（SPEA2）和参考点（NSGA3）更先进但复杂。教学版用拥挤距离足够。</p>
+<hr />
+<h2 id="_6">九、关键收获<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>多目标没有全局最优，只有 Pareto 前沿</strong>：解互不支配，是不同目标间的折中。</li>
+<li><strong>非支配排序分层</strong>：O(M·N²) 把种群按支配关系分层，第一层是 Pareto 最优。用被支配数减1的技巧避免重复比较。</li>
+<li><strong>拥挤距离维持分布均匀</strong>：边界个体 inf 保证不被淘汰，中间个体按两侧邻居距离排序。和前沿秩分治"接近前沿"和"分布均匀"。</li>
+<li><strong>NSGA2 = eaMuPlusLambda + selNSGA2</strong>：父子合并 → 非支配排序 → 按前沿秩+拥挤距离选。eaMuPlusLambda 的合并选择时机正好。</li>
+<li><strong>SBX + 多项式变异是 NSGA2 标准配套</strong>：有理论保证，eta 控制子代与父代相似度。</li>
+<li><strong>按 fitness 去重省比较</strong>：相同 fitness 的个体共享支配关系，避免 N² 重复比较。</li>
+</ol>
+<hr />
+<h2 id="_7">十、思考题<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h2>
+<ol>
+<li><code>sortNondominated</code> 用被支配数减1的技巧排后续前沿。如果直接对每个个体重新数被支配数会怎样？（提示：O(N²) 每层 vs O(N) 每层）</li>
+<li><code>assignCrowdingDist</code> 的边界个体赋 inf。若两个边界个体在同一维都是 min，会怎样？（提示：都赋 inf，但该维范围==0 时 continue）</li>
+<li><code>selNSGA2</code> 的最后一层按拥挤距离切。若最后一层全挤在一起（拥挤距离都≈0），切前 k 个和随机切有区别吗？（提示：几乎没区别，距离都≈0）</li>
+<li>ZDT1 的理论前沿 f2 = 1 - sqrt(f1)。50 代后 f1=0 时 f2=1.41（应≈1）。为什么？（提示：g(x) 还没收敛到 1，增加 ngen）</li>
+<li><code>sortNondominated</code> 按 fitness 去重。若两个个体内容不同但 fitness 相同，它们会被分到同一层吗？（提示：会，支配关系只看 fitness）</li>
+</ol>
+<hr />
+<h2 id="_8">十一、下一阶段预告<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h2>
+<p><strong>阶段 9：gp.py + 符号回归</strong> —— 遗传规划。前 8 阶段个体都是定长向量（位串/浮点/排列），阶段 9 个体是<strong>变长树结构</strong>（语法树）：
+- <strong>PrimitiveSet</strong>：定义函数集 + 终端集（变量/常量）
+- <strong>PrimitiveTree</strong>：树个体，继承 list，元素是 Primitive/Terminal
+- <strong>genHalfAndHalf</strong>：子树生成（满树/半树混合）
+- <strong>cxOnePoint（树版）</strong>：交换两棵子树
+- <strong>mutUniform（树版）</strong>：替换一个子树
+- <strong>实战</strong>：符号回归——用 GP 拟合 sin(x) 等函数</p>
+<p>GP 的核心难点：<strong>树结构无固定长度</strong>，交叉/变异在子树层面操作，要处理类型一致性（子树替换要类型匹配）。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
