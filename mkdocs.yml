@@ -21,7 +21,7 @@ theme:
     - search.share
     - content.code.copy
     - content.code.annotate
-    - content.tabs.link
+
   palette:
     - scheme: default
       primary: indigo
@@ -54,10 +54,7 @@ markdown_extensions:
       line_spans: __span
       pygments_lang_class: true
   - pymdownx.inlinehilite
-  - pymdownx.tabbed:
-      alternate: true
-  - pymdownx.tasklist:
-      custom_checkbox: true
+
   - attr_list
   - md_in_html
   - footnotes
