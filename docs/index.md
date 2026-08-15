@@ -132,7 +132,7 @@ graph TD
 
 ```powershell
 # Python 3.13.5（conda base），已装 deap 1.4 / pytest 8.3.4 / numpy 2.1.3
-$py = "python"
+$py = python  # 替换为你的 Python 解释器路径
 
 # 跑全部 158 个测试
 & $py -m pytest

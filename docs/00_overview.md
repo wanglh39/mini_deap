@@ -306,7 +306,7 @@ deap/
 
 ```powershell
 # Python 解释器：conda base 的 Python 3.13.5
-$py = "python"
+$py = python  # 替换为你的 Python 解释器路径
 
 # 跑全部测试（158 个）
 & $py -m pytest
