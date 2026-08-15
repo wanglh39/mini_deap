@@ -1,0 +1,82 @@
+site_name: mini_deap
+site_description: DEAP 进化算法库教学重写 —— 保留设计思想，简化非教学细节
+site_url: https://wanglh39.github.io/mini_deap/
+repo_url: https://github.com/wanglh39/mini_deap
+repo_name: wanglh39/mini_deap
+edit_uri: edit/master/docs/
+
+docs_dir: docs
+
+theme:
+  name: material
+  language: zh
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: orange
+      toggle:
+        icon: material/brightness-7
+        name: 切换深色模式
+    - scheme: slate
+      primary: indigo
+      accent: orange
+      toggle:
+        icon: material/brightness-4
+        name: 切换浅色模式
+  icon:
+    repo: fontawesome/brands/github
+  font:
+    text: Noto Sans SC
+    code: JetBrains Mono
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - attr_list
+  - md_in_html
+  - footnotes
+  - toc:
+      permalink: true
+
+nav:
+  - 总览: 00_overview.md
+  - 基础:
+      - 阶段 1 · Fitness: 01_fitness.md
+      - 阶段 2 · Toolbox: 02_toolbox.md
+      - 阶段 3 · Creator: 03_creator.md
+  - 算子与统计:
+      - 阶段 4 · 算子库: 04_operators.md
+      - 阶段 5 · support: 05_support.md
+  - 算法骨架:
+      - 阶段 6 · algorithms: 06_algorithms.md
+      - 阶段 7 · examples: 07_examples.md
+  - 进阶:
+      - 阶段 8 · NSGA2: 08_nsga2.md
+      - 阶段 9 · GP: 09_gp.md
+      - 阶段 10 · CMA-ES: 10_cma.md
